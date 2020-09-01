@@ -1,0 +1,125 @@
+Units
+-------
+So Richard Eisenberg has written the haskell units package.
+This is a good thing.
+
+    git clone --recursive https://github.com/goldfirere/units
+
+The units module is a boon.
+
+    We have parsing: 
+        g = 9.8 % [si| m/s^2 |]
+
+We have SI. We can define new systems of units
+And at compile time we have correctly dimensioned physics 
+and type safety in our program.
+
+Dimensions are the invariant and the units can vary;
+e.g. we can measure length in meters or yards.
+By specifying a unit a numerical value can be 
+extracted from a quantity.
+
+So to paraphrase first we have a Dimension we can then use combinators
+to build up composite dimensions from the fundamental ones i.e.
+
+VelocityDim = LengthDim :/ TimeDim
+
+Once we have dimensions we can make units. The Unit class
+handles conversions, we define a canonical unit of length, say meters,
+which means all lengths will internally be stored in meters.
+
+Tue  1 Sep 2020 11:46:29 IST
+-----------------------------
+So we are making simultaneous progress with the units module and the eircode solution.
+For the moment I can put in geoposition by hand but I have made an enquiry to eircode.
+Sad, sad statement...
+
+    https://data.gov.ie/dataset/suggest/40acc585-4ca5-4b4f-9332-f2d954c935ab
+    https://www.eircode.ie/business/feature
+
+Anyway now let us see where was I? Ah yes. AirPV will have the following advantage:
+
+    Ab initio physics.
+
+So we can convert in and out of units in a fully consistent way across the application.
+That means we can go from fundamental physical units relating to energy to Price/KWh
+etc. 
+
+Then the big jump will be in a pairing mechanism where we:
+    sell solar compute cycles.
+
+Some general reflections.
+Haskell allows us to think about 
+business logic in the right level of generality.
+
+Location Datatype
+------------------
+For instance a useful DataType:
+
+    data Location = Eircode | Address | GeoPosition | Postcode
+
+Of course google controls a lot of it:
+    https://developers.google.com/maps/documentation/geocoding/overview
+    https://cloud.google.com/maps-platform/terms/
+    https://github.com/mpilgrem/google-maps-geocoding#readme
+
+Given the location in one of those formats we can the generate the rest via
+a standard set of API calls. That takes care of a standard procedure for
+any kind of commercial application that requires a user address In the UK and Ireland 
+at least.
+
+Now we go from this step:
+
+    genSolarReport :: Eircode -> Address -> GeoPos -> SolarReport
+
+To something like this:
+
+    genSolarReport :: Location -> SolarReport
+
+Then when we have our SolarReport we want:
+
+    tenderSite :: SolarReport -> Market -> Offers
+
+Now we roll the ball forward a little further and think about 
+how the solar resource can be marketed :
+
+    sellSolarCycle :: ComputeDemand -> SolarSupply -> ContractOffers
+    
+    formContract :: Offer -> Terms -> Acceptance -> Consideration -> ComputeTask 
+
+    monitorSite :: Terms -> Performance -> Discharge
+
+    monitorUtility :: (DeviceMonad m) => m a  -> UtilityReport
+
+
+So the differences we think in terms of an OnDemand service rather 
+than annualized, we faciliate markets, we tie tokens to energy production
+which get transferred to companies in exchange for cash from the residential 
+user. Companies transfer to Govt for tax relief.
+
+Basically Combine Scott's love of Sunshine with Henry's GPU 
+one-that-got-away.
+
+Why doesn't everyone do this already?
+
+Functional Paradigms about to take off the connectivity and ease of
+instantiating virtual machines has come down:
+    (NixOS VMC) => Push VirtualMachineComputation -> Market -> MarketClears 
+                                                  -> RunCompute -> ReturnComputeModel
+
+The atomic unit stuff is going directly into units: HartreeAtomic:
+    Can think of a number of nice tests to run on that one 
+    for deriving useful order of magnitude values in the spirit of
+    Harrison.
+
+
+So more stack yaml stuff for units require: units, units-defs, units-parser.
+
+In haskell variable names must start with a lowercase letter. 
+Anything that is uppercase is interpreted by the 
+compiler as a Data Constructor which is why you are getting that error.
+
+
+
+
+
