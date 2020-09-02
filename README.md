@@ -9,5 +9,5 @@ bandgaps in electron volts, photon conversion efficiency etc.
 
 This allows for fast and safe transformation
 between differents systems of units e.g. planar surface areas
-measured in square feet, square meters, and energy values in kilowatts
-or ergs or british thermal units.
+measured in square feet, square meters, furlongs..., and energy values in kilowatts
+or ergs or british thermal units... and so on.
