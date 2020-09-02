@@ -1,37 +1,53 @@
 {-# LANGUAGE TypeOperators, ConstraintKinds, ScopedTypeVariables, TypeFamilies,
-             TypeSynonymInstances, FlexibleInstances, FlexibleContexts, DataKinds #-}
+             TypeSynonymInstances, FlexibleInstances, FlexibleContexts, 
+             DataKinds, UndecidableInstances #-}
 
 module Irradiate where
 --
 --Dimensionally Type Checked Module for standard solar energy calculations.
 --
-import Data.Dimensions.SI
-import Data.Metrology.Poly
-import Data.Metrology.SI.Poly ( SI )
-import Data.Units.SI
-import Data.Units.SI.Prefixes
+--
+--im
+import Data.Metrology
+import Data.Metrology.SI.Mono
+--import Data.Metrology.Show
 
---import Tests.Compile.CGS
---Area already defined units-defs/Data/Metrology/SI/PolyTypes.hs 
---type Area = (Meter :* Meter)
---PlaneOA KWH/m2 
 
-type Irradiance = (Watt :* Hour) :/ (Meter :^ Two)
-type PVSize = Area
-type PerformanceRatio = Double
-type EnergyYield = Joule
+--Unit Declarations
+data Year = Year
+instance Unit Year where
+  type BaseUnit Year = Second
+  conversionRatio _ = 60 * 60 * 24 * 365.242
 
-poai :: MkQu_ULN Irradiance lcsu Double
-poai = 1041.2 % Irradiance
 
-roofDim :: MkQu_DLN Area lcsu Double
-roofDim  = 4.03 % Area
+--https://en.wikipedia.org/wiki/Irradiance
+type IrradianceDim = Power :/ Area
+type TintIrradianceDim = Energy :/ Area
 
---data SolarArray = SolarArray { poai :: Irradiance 
---                             , pvsize :: PVSize   
---                             , pr :: PerformanceRatio
---                             }
+--type instance DefaultUnitOfDim TintIrradianceDim = Joule :/ (Meter :^ Two)
 
-calculateEnergyYield :: MkQu_ULN Irradiance lcsu Double -> MkQu_DLN Area lcsu Double -> MkQu_DLN Energy lcsu Double
-calculateEnergyYield poai pvsize = redim $ poai |*| pvsize
+type Irradiance = MkQu_DLN IrradianceDim DefaultLCSU Double
+
+--instance Show Irradiance where
+--    show _ = "W/m2"
+
+--type TintIrradiance = MkQu_DLN TintIrradianceDim DefaultLCSU Double
+type TintIrradiance = MkQu_ULN (Joule :/ (Meter :^ Two)) DefaultLCSU Double
+type PVSize = MkQu_ULN (Meter :^ Two) DefaultLCSU Double 
+type EnergyYield = MkQu_ULN Joule DefaultLCSU Double
+
+panelArea :: Double -> PVSize
+panelArea x = x % (Meter :^ sTwo) --
+
+tintirr :: Double -> TintIrradiance
+tintirr x = x % (Joule :/ (Meter :^ sTwo))
+
+calculateEnergyYield :: TintIrradiance -> PVSize -> EnergyYield
+calculateEnergyYield x y = redim $ x |*| y
+
+multiplyByPR :: Double -> TintIrradiance -> TintIrradiance
+multiplyByPR x y  = x *| y
+
+extend :: Length -> Length            -- a function over lengths
+extend x = redim $ x |+| (1 % Meter)
 

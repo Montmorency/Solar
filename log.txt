@@ -117,7 +117,40 @@ So more stack yaml stuff for units require: units, units-defs, units-parser.
 
 In haskell variable names must start with a lowercase letter. 
 Anything that is uppercase is interpreted by the 
-compiler as a Data Constructor which is why you are getting that error.
+compiler as a Data Constructor 
+
+need to under 
+type family
+type
+instance
+
+etc.
+
+https://github.com/goldfirere/units/blob/master/Tests/Compile/Physics.hs
+https://github.com/goldfirere/units/blob/4dfde7160fc44b4626e41000158e193a99f9adfb/Tests/Compile/Simulator.hs
+
+The simulator really shows you the power of Types in physics engines.
+So concise.
+
+From the docs 
+'''
+    The next section of code constructs an "LCSU" -- a local coherent set of units. 
+    The idea is that we wish to be able to choose a set of units which are 
+    to be used in the internal, concrete representation. An LCSU is just an 
+    association list giving a concrete unit for each dimension in your domain. 
+    The particular LCSU here says that length is stored in meters and time 
+    is stored in seconds. It would be invalid to specify an LCSU with repeats 
+    for either dimension or unit.
+'''
+
+This means we can work in a set of units where we don't require large 
+orders of magnitude in the concrete representations.
+
+Wed  2 Sep 2020 15:47:35 IST
+So we are picking away at Dimensions and Haskell Types and revelling in the similarities
+and differences and subtleties. It is most diverting. However we note that the LCSU has to be
+defined.
+
 
 
 

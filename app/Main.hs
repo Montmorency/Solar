@@ -1,17 +1,19 @@
 {-# LANGUAGE TypeOperators, ConstraintKinds, ScopedTypeVariables, TypeFamilies,
-             TypeSynonymInstances, FlexibleInstances, FlexibleContexts, DataKinds #-}
+             TypeSynonymInstances, FlexibleInstances, FlexibleContexts,
+             DataKinds #-}
 
 module Main where
 
 import Geoposition
-import Irradiate (Irradiance)
-
-import Data.Dimensions.SI
-import Data.Metrology.Poly
-import Data.Metrology.SI.Poly ( SI )
-import Data.Units.SI
-import Data.Units.SI.Prefixes
+import Irradiate
+import Data.Metrology.Show
 
 main :: IO ()
 main = do
-    calculateEnergyYield poai roofDim
+    let x = tintirr 1041.8
+        y = panelArea 4.03
+        z = calculateEnergyYield x y
+    putStrLn $ show x
+    putStrLn $ show y
+    putStrLn $ show z
+    putStrLn "Hello, World!" 
